@@ -1,1 +1,184 @@
-theme: jekyll-theme-cayman
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>轮播图</title>
+    <style>
+        * {
+            margin:0;
+            padding:0;
+            background: pink;
+        }
+        a{
+            text-decoration: none;
+        }
+        .body {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            margin:100px auto 0 auto;
+            box-shadow: 0 0 5px transparent;
+            overflow: hidden;
+        }
+        .body .center {
+            position: absolute;
+            width: 4200px;
+            height: 400px;
+            z-index: 1;
+        }
+        .body .center img {
+            float: left;
+            width: 600px;
+            height: 400px;
+        }
+        .body .number {
+            position: absolute;
+            right: 5px;
+            bottom:40px;
+            width: 150px;
+            height: 10px;
+            z-index: 2;
+        }
+        .body .number span {
+            margin-left: 5px;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: transparent;
+            text-align: number;
+            color:white;
+            cursor: pointer;
+        }
+        .body .number span.on{
+            background-color: red;
+        }
+        .body .arrow {
+            position: absolute;
+            top: 35%;
+            color: lightblue;
+            padding:0px 14px;
+            border-radius: 50%;
+            font-size: 50px;
+            z-index: 2;
+            display: none;
+        }
+        .body .arrow_left {
+            left: 10px;
+        }
+        .body .arrow_right {
+            right: 10px;
+        }
+        .body:hover .arrow {
+            display: block;
+        }
+        .body .arrow:hover {
+            background-color: rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="body">
+        <div class="center" style="left: -600px;">
+            <img src="../photo/blue.jpg" alt="">
+            <img src="../photo/xin.jpg" alt="">
+            <img src="../photo/girl.jpg" alt="">
+            <img src="../photo/yunwei.jpg" alt="">
+            <img src="../photo/girl4.jpg" alt="">
+            <img src="../photo/tou1.jpg" alt="">
+            <img src="../photo/yunwei1.jpg" alt="">
+        </div>
+        <div class="number">
+            <span class="on">1</span>
+            <span>2</span>
+            <span>3</span>
+            <span>4</span>
+            <span>5</span>
+        </div>
+        <a href="javascript:;" class="arrow arrow_left">&lt;</a>
+        <a href="javascript:;" class="arrow arrow_right">&gt;</a>
+    </div>
+    <script>
+        //手动轮播
+        var center = document.querySelector(".center");
+        var next = document.querySelector(".arrow_right");
+        var prev = document.querySelector(".arrow_left");
+        next.onclick = function () {
+            next_pic();
+        }
+        prev.onclick = function () {
+            prev_pic();
+        }
+        function next_pic () {
+            index++;
+            if(index > 4){
+                index = 0;
+            }
+            showCurrentDot();
+            var newLeft;
+            if(center.style.left === "-3600px"){
+                newLeft = -1200;
+            }else{
+                newLeft = parseInt(center.style.left)-600;
+            }
+            center.style.left = newLeft + "px";
+        }//循环播放
+        function prev_pic () {
+            index--;
+            if(index < 0){
+                index = 4;
+            }
+            showCurrentDot();
+            var newLeft;
+            if(center.style.left === "0px"){
+                newLeft = -2400;
+            }else{
+                newLeft = parseInt(center.style.left)+600;
+            }
+            center.style.left = newLeft + "px";
+        }
+        var timer = null;
+        function autoPlay () {
+            timer = setInterval(function () {
+                next_pic();
+            },2000);
+        }//setInterval()自动播放
+        autoPlay();
+
+        var body = document.querySelector(".body");
+        body.onmouseenter = function () {
+            clearInterval(timer);
+        }//clearInterval鼠标放上去停止播放
+        body.onmouseleave = function () {
+            autoPlay();    
+        }
+
+        var index = 0;
+        var dots = document.getElementsByTagName("span");
+        function showCurrentDot () {
+            for(var i = 0, len = dots.length; i < len; i++){
+                dots[i].className = "";
+            }
+            dots[index].className = "on";
+        }
+
+        for (var i = 0, len = dots.length; i < len; i++){
+            (function(i){
+                dots[i].onclick = function () {
+                    var dis = index - i;
+                    if(index == 4 && parseInt(center.style.left)!==-3000){
+                        dis = dis - 5;     
+                    }
+                    
+                    if(index == 0 && parseInt(center.style.left)!== -600){
+                        dis = 5 + dis;
+                    }
+                    center.style.left = (parseInt(center.style.left) +  dis * 600)+"px";
+                    index = i;
+                    showCurrentDot();
+                }
+            })(i);            
+        }//showCurrentDot()让小圆点可以随图片动起来
+    </script>
+</body>
+</html>
